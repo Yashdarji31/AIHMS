@@ -45,48 +45,46 @@ export const Route = createFileRoute("/_app/appointments")({
 });
 
 
+
 function AppointmentsPage() {
 
+  const [open, setOpen] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<any>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [doctorId, setDoctorId] = useState("");
+
   const queryClient = useQueryClient();
-  console.log("API:", api);
-  console.log("getAppointments:", api.getAppointments);
 
   const {
-  data: appointments = [],
-  refetch,
-  isLoading,
-  error,
-} = useQuery({
-  queryKey: ["appointments"],
-  queryFn: api.getAppointments,
-});
+    data: appointments = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: api.getAppointments,
+  });
 
-console.log("Appointments:", appointments);
-console.log("Loading:", isLoading);
-console.log("Error:", error);
-if (error) {
-  console.error(error);
-}
+  console.log("Appointments:", appointments);
+  console.log("Loading:", isLoading);
+  console.log("Error:", error);
+  if (error) {
+    console.error(error);
+  }
 
 
 
   const {
     data: doctors = [],
   } = useQuery({
-    queryKey:["doctors"],
-    queryFn:api.getDoctors,
+    queryKey: ["doctors"],
+    queryFn: api.getDoctors,
   });
 
 
 
-  const [open,setOpen] = useState(false);
-  const [doctorId, setDoctorId] = useState("");
-
-
-
   async function submit(
-    e:React.FormEvent<HTMLFormElement>
-  ){
+    e: React.FormEvent<HTMLFormElement>
+  ) {
 
     e.preventDefault();
 
@@ -94,7 +92,7 @@ if (error) {
     const form = new FormData(e.currentTarget);
 
 
-    try{
+    try {
 
 
       await api.createAppointment({
@@ -122,12 +120,12 @@ if (error) {
       setOpen(false);
 
       await queryClient.invalidateQueries({
-      queryKey: ["appointments"],
+        queryKey: ["appointments"],
       });
 
 
     }
-    catch(error){
+    catch (error) {
 
       toast.error(
         "Failed to book appointment"
@@ -138,313 +136,329 @@ if (error) {
   }
 
   if (isLoading) {
-  return <div>Loading appointments...</div>;
-}
+    return <div>Loading appointments...</div>;
+  }
 
 
   return (
 
-<div>
+    <div>
 
 
-<PageHeader
+      <PageHeader
 
-title="Appointments"
+        title="Appointments"
 
-description="Schedule and manage appointments."
+        description="Schedule and manage appointments."
 
-actions={
+        actions={
 
-<Dialog
-open={open}
-onOpenChange={setOpen}
->
+          <Dialog
+            open={open}
+            onOpenChange={setOpen}
+          >
 
 
-<DialogTrigger asChild>
+            <DialogTrigger asChild>
 
-<Button>
+              <Button>
 
-<CalendarPlus className="h-4 w-4"/>
+                <CalendarPlus className="h-4 w-4" />
 
-Book appointment
+                Book appointment
 
-</Button>
+              </Button>
 
-</DialogTrigger>
+            </DialogTrigger>
 
 
 
-<DialogContent>
+            <DialogContent>
 
 
-<DialogHeader>
+              <DialogHeader>
 
-<DialogTitle>
-Book Appointment
-</DialogTitle>
+                <DialogTitle>
+                  Book Appointment
+                </DialogTitle>
 
-</DialogHeader>
+              </DialogHeader>
 
 
 
-<form
-onSubmit={submit}
-className="space-y-4"
->
+              <form
+                onSubmit={submit}
+                className="space-y-4"
+              >
 
 
-<div>
+                <div>
 
-<Label>
-Doctor
-</Label>
+                  <Label>
+                    Doctor
+                  </Label>
 
 
-<Select
-    value={doctorId}
-    onValueChange={(value) => setDoctorId(value)}
->
+                  <Select
+                    value={doctorId}
+                    onValueChange={(value) => setDoctorId(value)}
+                  >
 
-<SelectTrigger>
+                    <SelectTrigger>
 
-<SelectValue placeholder="Select doctor"/>
+                      <SelectValue placeholder="Select doctor" />
 
-</SelectTrigger>
+                    </SelectTrigger>
 
 
-<SelectContent>
+                    <SelectContent>
 
 
-{
-doctors.map((doctor:any)=>(
+                      {
+                        doctors.map((doctor: any) => (
 
-<SelectItem
+                          <SelectItem
 
-key={doctor.id}
+                            key={doctor.id}
 
-value={String(doctor.id)}
+                            value={String(doctor.id)}
 
->
+                          >
 
-{doctor.name}
--
-{doctor.specialization}
+                            {doctor.full_name}
+                            -
+                            {doctor.specialization}
 
-</SelectItem>
+                          </SelectItem>
 
-))
+                        ))
 
-}
+                      }
 
 
-</SelectContent>
+                    </SelectContent>
 
 
-</Select>
+                  </Select>
 
 
-</div>
+                </div>
 
 
 
 
-<div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
 
 
-<div>
+                  <div>
 
-<Label>
-Date
-</Label>
+                    <Label>
+                      Date
+                    </Label>
 
-<Input
+                    <Input
 
-name="date"
+                      name="date"
 
-type="date"
+                      type="date"
 
-required
+                      required
 
-/>
+                    />
 
-</div>
+                  </div>
 
 
 
-<div>
+                  <div>
 
-<Label>
-Time
-</Label>
+                    <Label>
+                      Time
+                    </Label>
 
-<Input
+                    <Input
 
-name="time"
+                      name="time"
 
-type="time"
+                      type="time"
 
-required
+                      required
 
-/>
+                    />
 
-</div>
+                  </div>
 
 
-</div>
+                </div>
 
 
 
 
-<div>
+                <div>
 
-<Label>
-Reason
-</Label>
+                  <Label>
+                    Reason
+                  </Label>
 
 
-<Input
+                  <Input
 
-name="reason"
+                    name="reason"
 
-placeholder="Consultation"
+                    placeholder="Consultation"
 
-/>
+                  />
 
 
-</div>
+                </div>
 
 
 
 
-<DialogFooter>
+                <DialogFooter>
 
 
-<Button type="submit">
+                  <Button type="submit">
 
-Confirm booking
+                    Confirm booking
 
-</Button>
+                  </Button>
 
 
-</DialogFooter>
+                </DialogFooter>
 
 
 
-</form>
+              </form>
 
 
-</DialogContent>
+            </DialogContent>
 
 
-</Dialog>
+          </Dialog>
 
 
-}
+        }
 
-/>
+      />
 
 
 
-<div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
 
 
-<StatCard
+        <StatCard
 
-label="Total"
+          label="Total"
 
-value={appointments.length}
+          value={appointments.length}
 
-icon={CalendarDays}
+          icon={CalendarDays}
 
-/>
+        />
 
 
 
-<StatCard
+        <StatCard
 
-label="Waiting"
+          label="Waiting"
 
-value={0}
+          value={0}
 
-icon={Clock}
+          icon={Clock}
 
-/>
+        />
 
 
 
-<StatCard
+        <StatCard
 
-label="Completed"
+          label="Completed"
 
-value={0}
+          value={0}
 
-icon={CheckCircle2}
+          icon={CheckCircle2}
 
-/>
+        />
 
 
 
-<StatCard
+        <StatCard
 
-label="Cancelled"
+          label="Cancelled"
 
-value={0}
+          value={0}
 
-icon={XCircle}
+          icon={XCircle}
 
-/>
+        />
 
 
-</div>
+      </div>
 
 
 
 
 
-<DataTable
-  rows={appointments}
-  searchKeys={[
-    "patient",
-    "doctor",
-    "specialization",
-    "reason",
-    "status",
-  ] as any}
-  columns={[
-    {
-      key: "patient",
-      header: "Patient",
-    },
-    {
-      key: "doctor",
-      header: "Doctor",
-    },
-    {
-      key: "specialization",
-      header: "Specialization",
-    },
-    {
-      key: "appointment_date",
-      header: "Date",
-    },
-    {
-      key: "appointment_time",
-      header: "Time",
-    },
-    {
-      key: "status",
-      header: "Status",
-    },
-    {
-      key: "reason",
-      header: "Reason",
-    },
-  ]}
-/>
+      <DataTable
+        rows={appointments}
+        searchKeys={[
+          "patient",
+          "doctor",
+          "specialization",
+          "reason",
+          "status",
+        ] as any}
+        columns={[
+          {
+            key: "patient",
+            header: "Patient",
+          },
+          {
+            key: "doctor",
+            header: "Doctor",
+          },
+          {
+            key: "specialization",
+            header: "Specialization",
+          },
+          {
+            key: "appointment_date",
+            header: "Date",
+          },
+          {
+            key: "appointment_time",
+            header: "Time",
+          },
+          {
+            key: "status",
+            header: "Status",
+          },
+          {
+            key: "reason",
+            header: "Reason",
+          },
+          {
+            key: "actions",
+            header: "Actions",
+            cell: (appointment: any) => (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setEditingAppointment(appointment);
+                  setEditOpen(true);
+                }}
+              >
+                Edit
+              </Button>
+            ),
+          }
+        ]}
+      />
 
 
-</div>
+    </div>
 
   );
 
