@@ -19,12 +19,16 @@ class AppointmentUpdate(BaseModel):
 
 class AppointmentResponse(BaseModel):
     id: int
-    patient_id: int
-    doctor_id: int
+
+    patient: str
+    doctor: str
+    specialization: str
+
     appointment_date: date
     appointment_time: time
+
     reason: str
     status: str
 
     class Config:
-        from_attributes = True
+        from_attributes = True  

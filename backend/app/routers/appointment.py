@@ -73,8 +73,24 @@ def book_appointment(
 )
 def get_all_appointments(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
+    appointments = db.query(Appointment).all()
+
+    result = []
+
+    for appointment in appointments:
+        result.append({
+            "id": appointment.id,
+            "patient": appointment.patient.user.full_name,
+            "doctor": appointment.doctor.user.full_name,
+            "specialization": appointment.doctor.specialization,
+            "appointment_date": appointment.appointment_date,
+            "appointment_time": appointment.appointment_time,
+            "reason": appointment.reason,
+            "status": appointment.status,
+        })
+
+    return result
 
     # Admin can see all appointments
     if current_user.role == "admin":
