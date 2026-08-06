@@ -38,6 +38,7 @@ import { api } from "@/lib/api";
 
 import AppointmentTable from "@/components/appointments/AppointmentTable";
 import AppointmentForm from "@/components/appointments/AppointmentForm";
+import EditAppointmentDialog from "@/components/appointments/EditAppointmentDialog";
 
 export const Route = createFileRoute("/_app/appointments")({
   head: () => ({
@@ -238,7 +239,12 @@ function AppointmentsPage() {
           console.log("Delete:", appointment);
         }}
       />
-
+      <EditAppointmentDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        appointment={editingAppointment}
+        doctors={doctors}
+      />
 
     </div>
 
