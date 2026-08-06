@@ -39,6 +39,7 @@ import { api } from "@/lib/api";
 import AppointmentTable from "@/components/appointments/AppointmentTable";
 import AppointmentForm from "@/components/appointments/AppointmentForm";
 import EditAppointmentDialog from "@/components/appointments/EditAppointmentDialog";
+import DeleteAppointmentDialog from "@/components/appointments/DeleteAppointmentDialog";
 
 export const Route = createFileRoute("/_app/appointments")({
   head: () => ({
@@ -47,7 +48,8 @@ export const Route = createFileRoute("/_app/appointments")({
   component: AppointmentsPage,
 });
 
-
+const [deleteOpen, setDeleteOpen] = useState(false);
+const [deleteAppointment, setDeleteAppointment] = useState<any>(null);
 
 function AppointmentsPage() {
 
@@ -236,7 +238,8 @@ function AppointmentsPage() {
           setEditOpen(true);
         }}
         onDelete={(appointment) => {
-          console.log("Delete:", appointment);
+          setDeleteAppointment(appointment);
+          setDeleteOpen(true);
         }}
       />
       <EditAppointmentDialog
@@ -244,6 +247,11 @@ function AppointmentsPage() {
         onOpenChange={setEditOpen}
         appointment={editingAppointment}
         doctors={doctors}
+      />
+      <DeleteAppointmentDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        appointment={deleteAppointment}
       />
 
     </div>
