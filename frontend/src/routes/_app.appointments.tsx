@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { toast } from "sonner";
 import {
   CalendarPlus,
   CalendarDays,
@@ -13,26 +12,6 @@ import {
 import { PageHeader } from "@/components/app/page-header";
 import { StatCard } from "@/components/app/stat-card";
 import { DataTable } from "@/components/app/data-table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { api } from "@/lib/api";
 
@@ -48,15 +27,12 @@ export const Route = createFileRoute("/_app/appointments")({
   component: AppointmentsPage,
 });
 
-const [deleteOpen, setDeleteOpen] = useState(false);
-const [deleteAppointment, setDeleteAppointment] = useState<any>(null);
+
 
 function AppointmentsPage() {
 
-  const [open, setOpen] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<any>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [doctorId, setDoctorId] = useState("");
 
   const queryClient = useQueryClient();
 
@@ -84,61 +60,8 @@ function AppointmentsPage() {
     queryKey: ["doctors"],
     queryFn: api.getDoctors,
   });
-
-
-
-  async function submit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-
-    e.preventDefault();
-
-
-    const form = new FormData(e.currentTarget);
-
-
-    try {
-
-
-      await api.createAppointment({
-
-        doctor_id: Number(doctorId),
-
-        appointment_date:
-          String(form.get("date")),
-
-        appointment_time:
-          String(form.get("time")),
-
-        reason:
-          String(form.get("reason"))
-
-      });
-
-
-
-      toast.success(
-        "Appointment booked successfully"
-      );
-
-
-      setOpen(false);
-
-      await queryClient.invalidateQueries({
-        queryKey: ["appointments"],
-      });
-
-
-    }
-    catch (error) {
-
-      toast.error(
-        "Failed to book appointment"
-      );
-
-    }
-
-  }
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteAppointment, setDeleteAppointment] = useState<any>(null);
 
   if (isLoading) {
     return <div>Loading appointments...</div>;
@@ -151,26 +74,11 @@ function AppointmentsPage() {
 
 
       <PageHeader
-
         title="Appointments"
-
         description="Schedule and manage appointments."
-
         actions={
-
-          <PageHeader
-            title="Appointments"
-            description="Schedule and manage appointments."
-            actions={
-              <AppointmentForm
-                doctors={doctors}
-              />
-            }
-          />
-
-
+          <AppointmentForm doctors={doctors} />
         }
-
       />
 
 

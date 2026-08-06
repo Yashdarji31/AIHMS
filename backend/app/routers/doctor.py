@@ -122,11 +122,3 @@ def get_doctor_by_id(
 
     return doctor
 
-@router.get("")
-def get_all_doctors(
-    db: Session = Depends(get_db),
-):
-
-    doctors = db.query(Doctor).all()
-
-    return doctors  
