@@ -36,6 +36,7 @@ import {
 
 import { api } from "@/lib/api";
 
+import AppointmentTable from "@/components/appointments/AppointmentTable";
 
 export const Route = createFileRoute("/_app/appointments")({
   head: () => ({
@@ -400,61 +401,15 @@ function AppointmentsPage() {
 
 
 
-      <DataTable
-        rows={appointments}
-        searchKeys={[
-          "patient",
-          "doctor",
-          "specialization",
-          "reason",
-          "status",
-        ] as any}
-        columns={[
-          {
-            key: "patient",
-            header: "Patient",
-          },
-          {
-            key: "doctor",
-            header: "Doctor",
-          },
-          {
-            key: "specialization",
-            header: "Specialization",
-          },
-          {
-            key: "appointment_date",
-            header: "Date",
-          },
-          {
-            key: "appointment_time",
-            header: "Time",
-          },
-          {
-            key: "status",
-            header: "Status",
-          },
-          {
-            key: "reason",
-            header: "Reason",
-          },
-          {
-            key: "actions",
-            header: "Actions",
-            cell: (appointment: any) => (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setEditingAppointment(appointment);
-                  setEditOpen(true);
-                }}
-              >
-                Edit
-              </Button>
-            ),
-          }
-        ]}
+      <AppointmentTable
+        appointments={appointments}
+        onEdit={(appointment) => {
+          setEditingAppointment(appointment);
+          setEditOpen(true);
+        }}
+        onDelete={(appointment) => {
+          console.log("Delete:", appointment);
+        }}
       />
 
 
