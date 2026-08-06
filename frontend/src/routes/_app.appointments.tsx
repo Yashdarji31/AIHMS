@@ -37,6 +37,7 @@ import {
 import { api } from "@/lib/api";
 
 import AppointmentTable from "@/components/appointments/AppointmentTable";
+import AppointmentForm from "@/components/appointments/AppointmentForm";
 
 export const Route = createFileRoute("/_app/appointments")({
   head: () => ({
@@ -154,189 +155,15 @@ function AppointmentsPage() {
 
         actions={
 
-          <Dialog
-            open={open}
-            onOpenChange={setOpen}
-          >
-
-
-            <DialogTrigger asChild>
-
-              <Button>
-
-                <CalendarPlus className="h-4 w-4" />
-
-                Book appointment
-
-              </Button>
-
-            </DialogTrigger>
-
-
-
-            <DialogContent>
-
-
-              <DialogHeader>
-
-                <DialogTitle>
-                  Book Appointment
-                </DialogTitle>
-
-              </DialogHeader>
-
-
-
-              <form
-                onSubmit={submit}
-                className="space-y-4"
-              >
-
-
-                <div>
-
-                  <Label>
-                    Doctor
-                  </Label>
-
-
-                  <Select
-                    value={doctorId}
-                    onValueChange={(value) => setDoctorId(value)}
-                  >
-
-                    <SelectTrigger>
-
-                      <SelectValue placeholder="Select doctor" />
-
-                    </SelectTrigger>
-
-
-                    <SelectContent>
-
-
-                      {
-                        doctors.map((doctor: any) => (
-
-                          <SelectItem
-
-                            key={doctor.id}
-
-                            value={String(doctor.id)}
-
-                          >
-
-                            {doctor.full_name}
-                            -
-                            {doctor.specialization}
-
-                          </SelectItem>
-
-                        ))
-
-                      }
-
-
-                    </SelectContent>
-
-
-                  </Select>
-
-
-                </div>
-
-
-
-
-                <div className="grid grid-cols-2 gap-3">
-
-
-                  <div>
-
-                    <Label>
-                      Date
-                    </Label>
-
-                    <Input
-
-                      name="date"
-
-                      type="date"
-
-                      required
-
-                    />
-
-                  </div>
-
-
-
-                  <div>
-
-                    <Label>
-                      Time
-                    </Label>
-
-                    <Input
-
-                      name="time"
-
-                      type="time"
-
-                      required
-
-                    />
-
-                  </div>
-
-
-                </div>
-
-
-
-
-                <div>
-
-                  <Label>
-                    Reason
-                  </Label>
-
-
-                  <Input
-
-                    name="reason"
-
-                    placeholder="Consultation"
-
-                  />
-
-
-                </div>
-
-
-
-
-                <DialogFooter>
-
-
-                  <Button type="submit">
-
-                    Confirm booking
-
-                  </Button>
-
-
-                </DialogFooter>
-
-
-
-              </form>
-
-
-            </DialogContent>
-
-
-          </Dialog>
+          <PageHeader
+            title="Appointments"
+            description="Schedule and manage appointments."
+            actions={
+              <AppointmentForm
+                doctors={doctors}
+              />
+            }
+          />
 
 
         }
