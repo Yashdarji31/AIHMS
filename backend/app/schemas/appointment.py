@@ -11,6 +11,7 @@ class AppointmentCreate(BaseModel):
 
 
 class AppointmentUpdate(BaseModel):
+    doctor_id: Optional[int] = None
     appointment_date: Optional[date] = None
     appointment_time: Optional[time] = None
     reason: Optional[str] = None
