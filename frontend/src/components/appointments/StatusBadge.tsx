@@ -1,13 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 
-interface StatusBadgeProps {
+interface Props {
   status: string;
 }
 
 export default function StatusBadge({
   status,
-}: StatusBadgeProps) {
+}: Props) {
+
   switch (status.toLowerCase()) {
+
     case "scheduled":
       return (
         <Badge className="bg-blue-500 hover:bg-blue-600">
@@ -22,17 +24,17 @@ export default function StatusBadge({
         </Badge>
       );
 
-    case "pending":
+    case "cancelled":
       return (
-        <Badge className="bg-yellow-500 hover:bg-yellow-600 text-black">
-          Pending
+        <Badge className="bg-red-500 hover:bg-red-600">
+          Cancelled
         </Badge>
       );
 
-    case "cancelled":
+    case "pending":
       return (
-        <Badge variant="destructive">
-          Cancelled
+        <Badge className="bg-yellow-500 hover:bg-yellow-600">
+          Pending
         </Badge>
       );
 
@@ -44,3 +46,4 @@ export default function StatusBadge({
       );
   }
 }
+

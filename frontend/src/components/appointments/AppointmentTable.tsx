@@ -1,11 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { Appointment } from "@/types/appointment";
+
 import { DataTable } from "@/components/app/data-table";
 import StatusBadge from "./StatusBadge";
 
+import { Button } from "@/components/ui/button";
+
 interface AppointmentTableProps {
-  appointments: any[];
-  onEdit: (appointment: any) => void;
-  onDelete: (appointment: any) => void;
+  appointments: Appointment[];
+
+  onEdit: (appointment: Appointment) => void;
+
+  onDelete: (appointment: Appointment) => void;
 }
 
 export default function AppointmentTable({
@@ -22,44 +27,56 @@ export default function AppointmentTable({
         "specialization",
         "reason",
         "status",
-      ] as any}
+      ]}
       columns={[
         {
           key: "patient",
           header: "Patient",
         },
+
         {
           key: "doctor",
           header: "Doctor",
         },
+
         {
           key: "specialization",
           header: "Specialization",
         },
+
         {
           key: "appointment_date",
           header: "Date",
         },
+
         {
           key: "appointment_time",
           header: "Time",
         },
-        {
-          key: "status",
-          header: "Status",
-          cell: (appointment: any) => (
-            <StatusBadge status={appointment.status} />
-          ),
-        },
+
         {
           key: "reason",
           header: "Reason",
         },
+
+        {
+          key: "status",
+          header: "Status",
+
+          cell: (appointment) => (
+            <StatusBadge
+              status={appointment.status}
+            />
+          ),
+        },
+
         {
           key: "actions",
           header: "Actions",
-          cell: (appointment: any) => (
+
+          cell: (appointment) => (
             <div className="flex gap-2">
+
               <Button
                 size="sm"
                 variant="outline"
@@ -75,6 +92,7 @@ export default function AppointmentTable({
               >
                 Delete
               </Button>
+
             </div>
           ),
         },
