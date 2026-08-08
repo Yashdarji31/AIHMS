@@ -22,14 +22,20 @@ class AppointmentResponse(BaseModel):
     id: int
 
     patient: str
+
     doctor: str
+
+    doctor_id: int
+
     specialization: str
 
     appointment_date: date
+
     appointment_time: time
 
     reason: str
+
     status: str
 
     class Config:
-        from_attributes = True  
+        from_attributes = True
