@@ -23,6 +23,7 @@ import { Route as AppDoctorsRouteImport } from './routes/_app.doctors'
 import { Route as AppEmergencyRouteImport } from './routes/_app.emergency'
 import { Route as AppInventoryRouteImport } from './routes/_app.inventory'
 import { Route as AppLaboratoryRouteImport } from './routes/_app.laboratory'
+import { Route as AppMedicalRecordsRouteImport } from './routes/_app.medical-records'
 import { Route as AppNotificationsRouteImport } from './routes/_app.notifications'
 import { Route as AppPatientsRouteImport } from './routes/_app.patients'
 import { Route as AppPharmacyRouteImport } from './routes/_app.pharmacy'
@@ -104,6 +105,11 @@ const AppLaboratoryRoute = AppLaboratoryRouteImport.update({
   path: '/laboratory',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMedicalRecordsRoute = AppMedicalRecordsRouteImport.update({
+  id: '/medical-records',
+  path: '/medical-records',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/emergency': typeof AppEmergencyRoute
   '/inventory': typeof AppInventoryRoute
   '/laboratory': typeof AppLaboratoryRoute
+  '/medical-records': typeof AppMedicalRecordsRoute
   '/notifications': typeof AppNotificationsRoute
   '/patients': typeof AppPatientsRoute
   '/pharmacy': typeof AppPharmacyRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/emergency': typeof AppEmergencyRoute
   '/inventory': typeof AppInventoryRoute
   '/laboratory': typeof AppLaboratoryRoute
+  '/medical-records': typeof AppMedicalRecordsRoute
   '/notifications': typeof AppNotificationsRoute
   '/patients': typeof AppPatientsRoute
   '/pharmacy': typeof AppPharmacyRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/_app/emergency': typeof AppEmergencyRoute
   '/_app/inventory': typeof AppInventoryRoute
   '/_app/laboratory': typeof AppLaboratoryRoute
+  '/_app/medical-records': typeof AppMedicalRecordsRoute
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/patients': typeof AppPatientsRoute
   '/_app/pharmacy': typeof AppPharmacyRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/inventory'
     | '/laboratory'
+    | '/medical-records'
     | '/notifications'
     | '/patients'
     | '/pharmacy'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/emergency'
     | '/inventory'
     | '/laboratory'
+    | '/medical-records'
     | '/notifications'
     | '/patients'
     | '/pharmacy'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '/_app/emergency'
     | '/_app/inventory'
     | '/_app/laboratory'
+    | '/_app/medical-records'
     | '/_app/notifications'
     | '/_app/patients'
     | '/_app/pharmacy'
@@ -428,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLaboratoryRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/medical-records': {
+      id: '/_app/medical-records'
+      path: '/medical-records'
+      fullPath: '/medical-records'
+      preLoaderRoute: typeof AppMedicalRecordsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/notifications': {
       id: '/_app/notifications'
       path: '/notifications'
@@ -520,6 +539,7 @@ interface AppRouteChildren {
   AppEmergencyRoute: typeof AppEmergencyRoute
   AppInventoryRoute: typeof AppInventoryRoute
   AppLaboratoryRoute: typeof AppLaboratoryRoute
+  AppMedicalRecordsRoute: typeof AppMedicalRecordsRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppPatientsRoute: typeof AppPatientsRoute
   AppPharmacyRoute: typeof AppPharmacyRoute
@@ -540,6 +560,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppEmergencyRoute: AppEmergencyRoute,
   AppInventoryRoute: AppInventoryRoute,
   AppLaboratoryRoute: AppLaboratoryRoute,
+  AppMedicalRecordsRoute: AppMedicalRecordsRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppPatientsRoute: AppPatientsRoute,
   AppPharmacyRoute: AppPharmacyRoute,

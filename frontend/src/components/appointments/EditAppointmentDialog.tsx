@@ -2,290 +2,220 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import type { Doctor } from "@/types/doctor";
-import type {
-  Appointment,
-  AppointmentUpdate,
-} from "@/types/appointment";
-
-import { api } from "@/lib/api";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 
+import { api } from "@/lib/api";
+import { Doctor } from "@/types/doctor";
+
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  appointment: Appointment | null;
-  doctors: Doctor[];
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    appointment: any;
+    doctors: Doctor[];
 }
 
 export default function EditAppointmentDialog({
-  open,
-  onOpenChange,
-  appointment,
-  doctors,
+    open,
+    onOpenChange,
+    appointment,
+    doctors,
 }: Props) {
+    const queryClient = useQueryClient();
 
-  const queryClient = useQueryClient();
+    const [doctorId, setDoctorId] = useState("");
+    const [date, setDate] = useState("");
+    const [time, setTime] = useState("");
+    const [reason, setReason] = useState("");
+    const [status, setStatus] = useState("");
 
-  const [doctorId, setDoctorId] = useState("");
+    useEffect(() => {
+        if (appointment) {
+            setDoctorId(String(appointment.doctor_id));
 
-  const [date, setDate] = useState("");
+            setDate(String(appointment.appointment_date));
 
-  const [time, setTime] = useState("");
+            setTime(String(appointment.appointment_time));
 
-  const [reason, setReason] = useState("");
+            setReason(appointment.reason ?? "");
 
-  const [status, setStatus] = useState("");
+            setStatus(appointment.status);
+        }
+    }, [appointment]);
 
-  useEffect(() => {
+    async function save() {
+        try {
+            await api.updateAppointment(appointment.id, {
+                appointment_date: date,
+                appointment_time: time,
+                reason,
+                status,
+            });
 
-    if (!appointment) return;
+            toast.success("Appointment updated");
 
-    setDoctorId(
-      String(appointment.doctor_id)
-    );
+            onOpenChange(false);
 
-    setDate(
-      appointment.appointment_date
-    );
+            queryClient.invalidateQueries({
+                queryKey: ["appointments"],
+            });
 
-    setTime(
-      appointment.appointment_time
-    );
-
-    setReason(
-      appointment.reason
-    );
-
-    setStatus(
-      appointment.status
-    );
-
-  }, [appointment]);
-
-  async function save() {
-
-    if (!appointment) return;
-
-    const payload: AppointmentUpdate = {
-
-      doctor_id: Number(doctorId),
-
-      appointment_date: date,
-
-      appointment_time: time,
-
-      reason,
-
-      status,
-
-    };
-
-    try {
-
-      await api.updateAppointment(
-        appointment.id,
-        payload
-      );
-
-      toast.success(
-        "Appointment updated successfully"
-      );
-
-      onOpenChange(false);
-
-      await queryClient.invalidateQueries({
-        queryKey: ["appointments"],
-      });
-
-    } catch (error) {
-
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message);
+            }
+        }
     }
 
-  }
+    if (!appointment) return null;
 
-  if (!appointment) return null;
+    return (
+        <Dialog
+            open={open}
+            onOpenChange={onOpenChange}
+        >
+            <DialogContent>
 
-  return (
+                <DialogHeader>
+                    <DialogTitle>
+                        Edit Appointment
+                    </DialogTitle>
+                </DialogHeader>
 
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
+                <div className="space-y-4">
 
-      <DialogContent>
+                    <div>
+                        <Label>Doctor</Label>
 
-        <DialogHeader>
+                        <Select
+                            value={doctorId}
+                            onValueChange={setDoctorId}
+                        >
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
 
-          <DialogTitle>
+                            <SelectContent>
 
-            Edit Appointment
+                                {doctors.map((doctor: any) => (
+                                    <SelectItem
+                                        key={doctor.id}
+                                        value={String(doctor.id)}
+                                    >
+                                        {doctor.name} - {doctor.specialization}
+                                    </SelectItem>
+                                ))}
 
-          </DialogTitle>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-        </DialogHeader>
+                    <div className="grid grid-cols-2 gap-3">
 
-        <div className="space-y-4">
+                        <div>
+                            <Label>Date</Label>
 
-          <div>
+                            <Input
+                                type="date"
+                                value={date}
+                                onChange={(e) =>
+                                    setDate(e.target.value)
+                                }
+                            />
+                        </div>
 
-            <Label>Doctor</Label>
+                        <div>
+                            <Label>Time</Label>
 
-            <Select
-              value={doctorId}
-              onValueChange={setDoctorId}
-            >
+                            <Input
+                                type="time"
+                                value={time}
+                                onChange={(e) =>
+                                    setTime(e.target.value)
+                                }
+                            />
+                        </div>
 
-              <SelectTrigger>
+                    </div>
 
-                <SelectValue />
+                    <div>
 
-              </SelectTrigger>
+                        <Label>Reason</Label>
 
-              <SelectContent>
+                        <Input
+                            value={reason}
+                            onChange={(e) =>
+                                setReason(e.target.value)
+                            }
+                        />
 
-                {doctors.map((doctor) => (
+                    </div>
 
-                  <SelectItem
-                    key={doctor.id}
-                    value={String(doctor.id)}
-                  >
+                    <div>
 
-                    {doctor.name} - {doctor.specialization}
+                        <Label>Status</Label>
 
-                  </SelectItem>
+                        <Select
+                            value={status}
+                            onValueChange={setStatus}
+                        >
 
-                ))}
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
 
-              </SelectContent>
+                            <SelectContent>
 
-            </Select>
+                                <SelectItem value="scheduled">
+                                    Scheduled
+                                </SelectItem>
 
-          </div>
+                                <SelectItem value="pending">
+                                    Pending
+                                </SelectItem>
 
-          <div className="grid grid-cols-2 gap-4">
+                                <SelectItem value="completed">
+                                    Completed
+                                </SelectItem>
 
-            <div>
+                                <SelectItem value="cancelled">
+                                    Cancelled
+                                </SelectItem>
 
-              <Label>Date</Label>
+                            </SelectContent>
 
-              <Input
-                type="date"
-                value={date}
-                onChange={(e) =>
-                  setDate(e.target.value)
-                }
-              />
+                        </Select>
 
-            </div>
+                    </div>
 
-            <div>
+                </div>
 
-              <Label>Time</Label>
+                <DialogFooter>
 
-              <Input
-                type="time"
-                value={time}
-                onChange={(e) =>
-                  setTime(e.target.value)
-                }
-              />
+                    <Button onClick={save}>
+                        Save Changes
+                    </Button>
 
-            </div>
+                </DialogFooter>
 
-          </div>
-
-          <div>
-
-            <Label>Reason</Label>
-
-            <Input
-              value={reason}
-              onChange={(e) =>
-                setReason(e.target.value)
-              }
-            />
-
-          </div>
-
-          <div>
-
-            <Label>Status</Label>
-
-            <Select
-              value={status}
-              onValueChange={setStatus}
-            >
-
-              <SelectTrigger>
-
-                <SelectValue />
-
-              </SelectTrigger>
-
-              <SelectContent>
-
-                <SelectItem value="scheduled">
-                  Scheduled
-                </SelectItem>
-
-                <SelectItem value="pending">
-                  Pending
-                </SelectItem>
-
-                <SelectItem value="completed">
-                  Completed
-                </SelectItem>
-
-                <SelectItem value="cancelled">
-                  Cancelled
-                </SelectItem>
-
-              </SelectContent>
-
-            </Select>
-
-          </div>
-
-        </div>
-
-        <DialogFooter>
-
-          <Button
-            onClick={save}
-          >
-            Save Changes
-          </Button>
-
-        </DialogFooter>
-
-      </DialogContent>
-
-    </Dialog>
-
-  );
-
+            </DialogContent>
+        </Dialog>
+    );
 }

@@ -123,6 +123,87 @@ def get_my_medical_records(
 
 
 # ======================================================
+# Get Medical Records
+# ======================================================
+
+@router.get(
+    "",
+    response_model=list[MedicalRecordResponse]
+)
+def get_medical_records(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles("admin", "doctor", "patient")
+    ),
+):
+
+    # -----------------------------
+    # Admin
+    # -----------------------------
+
+    if current_user.role == "admin":
+
+        return (
+            db.query(MedicalRecord)
+            .all()
+        )
+
+    # -----------------------------
+    # Doctor
+    # -----------------------------
+
+    if current_user.role == "doctor":
+
+        doctor = (
+            db.query(Doctor)
+            .filter(
+                Doctor.user_id == current_user.id
+            )
+            .first()
+        )
+
+        if not doctor:
+            raise HTTPException(
+                status_code=404,
+                detail="Doctor profile not found."
+            )
+
+        return (
+            db.query(MedicalRecord)
+            .filter(
+                MedicalRecord.doctor_id == doctor.id
+            )
+            .all()
+        )
+
+    # -----------------------------
+    # Patient
+    # -----------------------------
+
+    patient = (
+        db.query(Patient)
+        .filter(
+            Patient.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not patient:
+        raise HTTPException(
+            status_code=404,
+            detail="Patient profile not found."
+        )
+
+    return (
+        db.query(MedicalRecord)
+        .filter(
+            MedicalRecord.patient_id == patient.id
+        )
+        .all()
+    )
+
+
+# ======================================================
 # Get Medical Record by ID
 # ======================================================
 
