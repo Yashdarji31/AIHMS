@@ -25,8 +25,11 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     id: int
     full_name: str
-    email: EmailStr
+    email: str
     role: str
+
+    class Config:
+        from_attributes = True
 
 
 class Token(BaseModel):

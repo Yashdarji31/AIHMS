@@ -1,14 +1,29 @@
-import type { LoginPayload, LoginResponse } from "@/types/api";
-
+import type { User } from "@/types/user";
+import type { Appointment } from "@/types/appointment";
 import type { Doctor } from "@/types/doctor";
+import type {
+  MedicalRecord,
+  MedicalRecordCreate,
+  MedicalRecordUpdate,
+} from "@/types/medicalRecord";
 
-import type { Appointment, AppointmentCreate, AppointmentUpdate } from "@/types/appointment";
+// ======================================================
+// BASE URL
+// ======================================================
 
 const BASE_URL = "http://127.0.0.1:8000";
+
+// ======================================================
+// TOKEN
+// ======================================================
 
 function getToken() {
   return localStorage.getItem("token");
 }
+
+// ======================================================
+// API REQUEST
+// ======================================================
 
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
@@ -28,20 +43,54 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
   });
 
   if (!response.ok) {
-    const error = await response.json();
+    let errorMessage = "API Error";
 
-    throw new Error(error.detail || "API Error");
+    try {
+      const error = await response.json();
+
+      errorMessage = error.detail || errorMessage;
+    } catch {
+      // Keep default error message
+    }
+
+    throw new Error(errorMessage);
   }
 
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
-export const api = {
-  // ==========================
-  // AUTH
-  // ==========================
+// ======================================================
+// DELAY
+// ======================================================
 
-  async login(payload: LoginPayload): Promise<LoginResponse> {
+const delay = (ms = 250) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+// ======================================================
+// SEED DATA
+// ======================================================
+
+const seedMedicines: any[] = [];
+
+const seedBeds: any[] = [];
+
+const seedInvoices: any[] = [];
+
+const seedLabTests: any[] = [];
+
+const seedEmergency: any[] = [];
+
+const seedNotifications: any[] = [];
+
+// ======================================================
+// API
+// ======================================================
+
+export const api = {
+  // ====================================================
+  // AUTH
+  // ====================================================
+
+  async login(payload: { email: string; password: string }) {
     const formData = new URLSearchParams();
 
     formData.append("username", payload.email);
@@ -59,10 +108,20 @@ export const api = {
     });
 
     if (!response.ok) {
-      throw new Error("Invalid credentials");
+      let message = "Invalid credentials";
+
+      try {
+        const error = await response.json();
+
+        message = error.detail || message;
+      } catch {
+        // Keep default message
+      }
+
+      throw new Error(message);
     }
 
-    const data: LoginResponse = await response.json();
+    const data = await response.json();
 
     localStorage.setItem("token", data.access_token);
 
@@ -70,30 +129,76 @@ export const api = {
   },
 
   async getCurrentUser() {
-    return apiRequest("/auth/me");
+    return apiRequest<User>("/auth/me");
   },
 
-  // ==========================
+  async register(data: any) {
+    await delay();
+
+    return {
+      ok: true,
+      user: data,
+    };
+  },
+
+  async forgotPassword(email: string) {
+    await delay();
+
+    return {
+      ok: true,
+      email,
+    };
+  },
+
+  async resetPassword(token: string, password: string) {
+    await delay();
+
+    return {
+      ok: true,
+    };
+  },
+
+  async verifyOtp(code: string) {
+    await delay();
+
+    return {
+      ok: true,
+    };
+  },
+
+  // ====================================================
+  // PATIENTS
+  // ====================================================
+
+  async getPatients() {
+    return apiRequest("/patients");
+  },
+
+  async getPatient(id: string) {
+    return apiRequest(`/patients/${id}`);
+  },
+
+  // ====================================================
   // DOCTORS
-  // ==========================
+  // ====================================================
 
-  async getDoctors(): Promise<Doctor[]> {
-    return apiRequest("/doctors");
+  async getDoctors() {
+    return apiRequest<Doctor[]>("/doctors");
   },
 
-  async getDoctor(id: number): Promise<Doctor> {
+  async getDoctor(id: number) {
     return apiRequest(`/doctors/${id}`);
   },
 
-  // ==========================
+  // ====================================================
   // APPOINTMENTS
-  // ==========================
+  // ====================================================
 
-  async getAppointments(): Promise<Appointment[]> {
-    return apiRequest("/appointments");
+  async getAppointments() {
+    return apiRequest<Appointment[]>("/appointments");
   },
 
-  async createAppointment(data: AppointmentCreate) {
+  async createAppointment(data: any) {
     return apiRequest("/appointments", {
       method: "POST",
 
@@ -101,7 +206,7 @@ export const api = {
     });
   },
 
-  async updateAppointment(id: number, data: AppointmentUpdate) {
+  async updateAppointment(id: number, data: any) {
     return apiRequest(`/appointments/${id}`, {
       method: "PUT",
 
@@ -115,57 +220,134 @@ export const api = {
     });
   },
 
-  // ==========================
-// MEDICAL RECORDS
-// ==========================
+  // ====================================================
+  // MEDICAL RECORDS
+  // ====================================================
 
-async getMedicalRecords() {
-  return apiRequest("/medical-records");
-},
+  async getMedicalRecords() {
+    return apiRequest<MedicalRecord[]>("/medical-records");
+  },
 
-async getMyMedicalRecords() {
-  return apiRequest("/medical-records/me");
-},
+  async getMyMedicalRecords() {
+    return apiRequest<MedicalRecord[]>("/medical-records/me");
+  },
 
-async getMedicalRecord(id: number) {
-  return apiRequest(
-    `/medical-records/${id}`
-  );
-},
+  async getMedicalRecord(id: number) {
+    return apiRequest<MedicalRecord>(`/medical-records/${id}`);
+  },
 
-async createMedicalRecord(
-  data: any
-) {
-  return apiRequest(
-    "/medical-records",
-    {
+  async createMedicalRecord(data: MedicalRecordCreate) {
+    return apiRequest<MedicalRecord>("/medical-records", {
       method: "POST",
-      body: JSON.stringify(data),
-    }
-  );
-},
 
-async updateMedicalRecord(
-  id: number,
-  data: any
-) {
-  return apiRequest(
-    `/medical-records/${id}`,
-    {
+      body: JSON.stringify(data),
+    });
+  },
+
+  async updateMedicalRecord(id: number, data: MedicalRecordUpdate) {
+    return apiRequest<MedicalRecord>(`/medical-records/${id}`, {
       method: "PUT",
-      body: JSON.stringify(data),
-    }
-  );
-},
 
-async deleteMedicalRecord(
-  id: number
-) {
-  return apiRequest(
-    `/medical-records/${id}`,
-    {
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteMedicalRecord(id: number) {
+    return apiRequest<{
+      message: string;
+    }>(`/medical-records/${id}`, {
       method: "DELETE",
-    }
-  );
-},
+    });
+  },
+
+  // ====================================================
+  // ANALYTICS
+  // ====================================================
+
+  async getAnalytics() {
+    await delay();
+
+    return {
+      kpis: {
+        totalPatients: 0,
+        doctors: 0,
+        revenueMTD: 0,
+        admissions: 0,
+        discharges: 0,
+        avgWaitMin: 0,
+        bedsAvailable: 0,
+        medicinesInStock: 0,
+      },
+
+      monthlyRevenue: [],
+
+      diseaseDistribution: [],
+
+      dailyPatients: [],
+
+      bedOccupancy: [],
+
+      healthTrend: [],
+    };
+  },
+
+  // ====================================================
+  // MEDICINES
+  // ====================================================
+
+  async getMedicines() {
+    await delay();
+
+    return seedMedicines;
+  },
+
+  // ====================================================
+  // BEDS
+  // ====================================================
+
+  async getBeds() {
+    await delay();
+
+    return seedBeds;
+  },
+
+  // ====================================================
+  // BILLING
+  // ====================================================
+
+  async getInvoices() {
+    await delay();
+
+    return seedInvoices;
+  },
+
+  // ====================================================
+  // LAB
+  // ====================================================
+
+  async getLabTests() {
+    await delay();
+
+    return seedLabTests;
+  },
+
+  // ====================================================
+  // EMERGENCY
+  // ====================================================
+
+  async getEmergencyCases() {
+    await delay();
+
+    return seedEmergency;
+  },
+
+  // ====================================================
+  // NOTIFICATIONS
+  // ====================================================
+
+  async getNotifications() {
+    await delay();
+
+    return seedNotifications;
+  },
 };

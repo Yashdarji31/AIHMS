@@ -18,6 +18,12 @@ import DeleteMedicalRecordDialog from "@/components/medical-records/DeleteMedica
 import { api } from "@/lib/api";
 
 import type { MedicalRecord } from "@/types/medicalRecord";
+import type { User } from "@/types/user";
+
+
+// ======================================================
+// ROUTE
+// ======================================================
 
 export const Route = createFileRoute(
   "/_app/medical-records"
@@ -33,37 +39,69 @@ export const Route = createFileRoute(
   component: MedicalRecordsPage,
 });
 
+
+// ======================================================
+// PAGE
+// ======================================================
+
 function MedicalRecordsPage() {
 
-  const [editingRecord, setEditingRecord] =
-    useState<MedicalRecord | null>(null);
+  // ====================================================
+  // STATE
+  // ====================================================
 
-  const [editOpen, setEditOpen] =
-    useState(false);
+  const [
+    editingRecord,
+    setEditingRecord,
+  ] = useState<MedicalRecord | null>(null);
 
-  const [deleteRecord, setDeleteRecord] =
-    useState<MedicalRecord | null>(null);
+  const [
+    editOpen,
+    setEditOpen,
+  ] = useState(false);
 
-  const [deleteOpen, setDeleteOpen] =
-    useState(false);
+  const [
+    deleteRecord,
+    setDeleteRecord,
+  ] = useState<MedicalRecord | null>(null);
+
+  const [
+    deleteOpen,
+    setDeleteOpen,
+  ] = useState(false);
+
+
+  // ====================================================
+  // CURRENT USER
+  // ====================================================
 
   const {
     data: currentUser,
     isLoading: userLoading,
-  } = useQuery({
+  } = useQuery<User>({
     queryKey: ["current-user"],
     queryFn: api.getCurrentUser,
   });
+
+
+  // ====================================================
+  // MEDICAL RECORDS
+  // ====================================================
 
   const {
     data: records = [],
     isLoading: recordsLoading,
     isError,
     error,
-  } = useQuery({
+  } = useQuery<MedicalRecord[]>({
     queryKey: ["medical-records"],
     queryFn: api.getMedicalRecords,
   });
+
+
+  // ====================================================
+  // APPOINTMENTS
+  // ====================================================
 
   const {
     data: appointments = [],
@@ -73,19 +111,29 @@ function MedicalRecordsPage() {
     queryFn: api.getAppointments,
   });
 
+
+  // ====================================================
+  // LOADING
+  // ====================================================
+
   if (
     userLoading ||
     recordsLoading ||
     appointmentsLoading
   ) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center">
+      <div className="flex min-h-[75] items-center justify-center">
         <p className="text-sm text-muted-foreground">
           Loading medical records...
         </p>
       </div>
     );
   }
+
+
+  // ====================================================
+  // ERROR
+  // ====================================================
 
   if (isError) {
     return (
@@ -105,16 +153,32 @@ function MedicalRecordsPage() {
     );
   }
 
+
+  // ====================================================
+  // ROLE
+  // ====================================================
+
   const role = currentUser?.role;
 
+
+  // Doctor can create records
   const canCreate =
     role === "doctor";
 
+
+  // Doctor can edit own records
   const canEdit =
     role === "doctor";
 
+
+  // Admin can delete records
   const canDelete =
     role === "admin";
+
+
+  // ====================================================
+  // EDIT HANDLER
+  // ====================================================
 
   function handleEdit(
     record: MedicalRecord
@@ -123,6 +187,11 @@ function MedicalRecordsPage() {
     setEditOpen(true);
   }
 
+
+  // ====================================================
+  // DELETE HANDLER
+  // ====================================================
+
   function handleDelete(
     record: MedicalRecord
   ) {
@@ -130,12 +199,17 @@ function MedicalRecordsPage() {
     setDeleteOpen(true);
   }
 
+
+  // ====================================================
+  // UI
+  // ====================================================
+
   return (
     <div className="space-y-6">
 
-      {/* =========================
+      {/* ================================================
           HEADER
-          ========================= */}
+      ================================================= */}
 
       <PageHeader
         title="Medical Records"
@@ -150,9 +224,10 @@ function MedicalRecordsPage() {
         }
       />
 
-      {/* =========================
+
+      {/* ================================================
           STATISTICS
-          ========================= */}
+      ================================================= */}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
@@ -171,17 +246,20 @@ function MedicalRecordsPage() {
 
       </div>
 
-      {/* =========================
-          TABLE
-          ========================= */}
+
+      {/* ================================================
+          MEDICAL RECORD TABLE
+      ================================================= */}
 
       <MedicalRecordTable
         records={records}
+
         onEdit={
           canEdit
             ? handleEdit
             : undefined
         }
+
         onDelete={
           canDelete
             ? handleDelete
@@ -189,9 +267,10 @@ function MedicalRecordsPage() {
         }
       />
 
-      {/* =========================
-          EDIT
-          ========================= */}
+
+      {/* ================================================
+          EDIT DIALOG
+      ================================================= */}
 
       {canEdit && (
         <EditMedicalRecordDialog
@@ -201,9 +280,10 @@ function MedicalRecordsPage() {
         />
       )}
 
-      {/* =========================
-          DELETE
-          ========================= */}
+
+      {/* ================================================
+          DELETE DIALOG
+      ================================================= */}
 
       {canDelete && (
         <DeleteMedicalRecordDialog

@@ -1,217 +1,114 @@
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { FilePlus2 } from "lucide-react";
+import type { MedicalRecord } from "@/types/medicalRecord";
 
-import type { MedicalRecordCreate } from "@/types/medicalRecord";
-
-import { api } from "@/lib/api";
-
+import { DataTable } from "@/components/app/data-table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 interface Props {
-  appointments: {
-    id: number;
-  }[];
+  records: MedicalRecord[];
+
+  onEdit?: (
+    record: MedicalRecord
+  ) => void;
+
+  onDelete?: (
+    record: MedicalRecord
+  ) => void;
 }
 
-export default function MedicalRecordForm({
-  appointments,
+export default function MedicalRecordTable({
+  records,
+  onEdit,
+  onDelete,
 }: Props) {
-  const queryClient = useQueryClient();
-
-  const [open, setOpen] = useState(false);
-
-  const [appointmentId, setAppointmentId] =
-    useState("");
-
-  const [diagnosis, setDiagnosis] =
-    useState("");
-
-  const [prescription, setPrescription] =
-    useState("");
-
-  const [notes, setNotes] =
-    useState("");
-
-  const [saving, setSaving] =
-    useState(false);
-
-  async function submit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
-
-    if (!appointmentId) {
-      toast.error(
-        "Please enter an appointment ID"
-      );
-      return;
-    }
-
-    const payload: MedicalRecordCreate = {
-      appointment_id: Number(
-        appointmentId
-      ),
-
-      diagnosis,
-
-      prescription,
-
-      notes,
-    };
-
-    try {
-      setSaving(true);
-
-      await api.createMedicalRecord(
-        payload
-      );
-
-      toast.success(
-        "Medical record created successfully"
-      );
-
-      setOpen(false);
-
-      setAppointmentId("");
-      setDiagnosis("");
-      setPrescription("");
-      setNotes("");
-
-      await queryClient.invalidateQueries({
-        queryKey: ["medical-records"],
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error(
-          "Failed to create medical record"
-        );
-      }
-    } finally {
-      setSaving(false);
-    }
-  }
-
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <DialogTrigger asChild>
-        <Button>
-          <FilePlus2 className="mr-2 h-4 w-4" />
+    <DataTable
+      rows={records}
+      searchKeys={[
+        "diagnosis",
+        "prescription",
+        "notes",
+      ]}
+      columns={[
+        {
+          key: "id",
+          header: "ID",
+        },
 
-          Add Medical Record
-        </Button>
-      </DialogTrigger>
+        {
+          key: "appointment_id",
+          header: "Appointment",
+        },
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            Create Medical Record
-          </DialogTitle>
-        </DialogHeader>
+        {
+          key: "doctor_id",
+          header: "Doctor ID",
+        },
 
-        <form
-          onSubmit={submit}
-          className="space-y-4"
-        >
-          <div>
-            <Label>
-              Appointment ID
-            </Label>
+        {
+          key: "patient_id",
+          header: "Patient ID",
+        },
 
-            <Input
-              type="number"
-              min="1"
-              value={appointmentId}
-              onChange={(e) =>
-                setAppointmentId(
-                  e.target.value
-                )
-              }
-              placeholder="Enter appointment ID"
-              required
-            />
-          </div>
+        {
+          key: "diagnosis",
+          header: "Diagnosis",
+        },
 
-          <div>
-            <Label>
-              Diagnosis
-            </Label>
+        {
+          key: "prescription",
+          header: "Prescription",
+        },
 
-            <Input
-              value={diagnosis}
-              onChange={(e) =>
-                setDiagnosis(
-                  e.target.value
-                )
-              }
-              placeholder="Enter diagnosis"
-              required
-            />
-          </div>
+        {
+          key: "notes",
+          header: "Notes",
+        },
 
-          <div>
-            <Label>
-              Prescription
-            </Label>
+        {
+          key: "created_at",
+          header: "Created",
 
-            <Input
-              value={prescription}
-              onChange={(e) =>
-                setPrescription(
-                  e.target.value
-                )
-              }
-              placeholder="Enter prescription"
-              required
-            />
-          </div>
+          cell: (record) =>
+            new Date(
+              record.created_at
+            ).toLocaleDateString(),
+        },
 
-          <div>
-            <Label>
-              Notes
-            </Label>
+        {
+          key: "actions",
+          header: "Actions",
 
-            <Input
-              value={notes}
-              onChange={(e) =>
-                setNotes(
-                  e.target.value
-                )
-              }
-              placeholder="Additional notes"
-              required
-            />
-          </div>
+          cell: (record) => (
+            <div className="flex gap-2">
 
-          <DialogFooter>
-            <Button
-              type="submit"
-              disabled={saving}
-            >
-              {saving
-                ? "Creating..."
-                : "Create Record"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+              {onEdit && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    onEdit(record)
+                  }
+                >
+                  Edit
+                </Button>
+              )}
+
+              {onDelete && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() =>
+                    onDelete(record)
+                  }
+                >
+                  Delete
+                </Button>
+              )}
+
+            </div>
+          ),
+        },
+      ]}
+    />
   );
 }
