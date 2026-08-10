@@ -8,7 +8,11 @@ from app.database.database import Base
 class MedicalRecord(Base):
     __tablename__ = "medical_records"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
     appointment_id = Column(
         Integer,
@@ -28,17 +32,41 @@ class MedicalRecord(Base):
         nullable=False
     )
 
-    diagnosis = Column(String(255), nullable=False)
+    symptoms = Column(
+        Text,
+        nullable=False
+    )
 
-    prescription = Column(Text, nullable=False)
+    diagnosis = Column(
+        String(255),
+        nullable=False
+    )
 
-    notes = Column(Text)
+    prescription = Column(
+        Text,
+        nullable=False
+    )
+
+    notes = Column(
+        Text,
+        nullable=True
+    )
 
     created_at = Column(
         DateTime,
         default=datetime.utcnow
     )
 
-    appointment = relationship("Appointment")
-    doctor = relationship("Doctor")
-    patient = relationship("Patient")
+    # Relationships
+
+    appointment = relationship(
+        "Appointment"
+    )
+
+    doctor = relationship(
+        "Doctor"
+    )
+
+    patient = relationship(
+        "Patient"
+    )

@@ -4,19 +4,31 @@ from pydantic import BaseModel
 
 
 class MedicalRecordCreate(BaseModel):
+
     appointment_id: int
+
+    symptoms: str
+
     diagnosis: str
+
     prescription: str
-    notes: str
+
+    notes: str | None = None
 
 
 class MedicalRecordUpdate(BaseModel):
+
+    symptoms: str | None = None
+
     diagnosis: str | None = None
+
     prescription: str | None = None
+
     notes: str | None = None
 
 
 class MedicalRecordResponse(BaseModel):
+
     id: int
 
     appointment_id: int
@@ -25,11 +37,13 @@ class MedicalRecordResponse(BaseModel):
 
     patient_id: int
 
+    symptoms: str
+
     diagnosis: str
 
     prescription: str
 
-    notes: str
+    notes: str | None
 
     created_at: datetime
 
