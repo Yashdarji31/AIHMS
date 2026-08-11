@@ -6,6 +6,11 @@ import type {
   MedicalRecordCreate,
   MedicalRecordUpdate,
 } from "@/types/medicalRecord";
+import type {
+  Billing,
+  BillingCreate,
+  BillingUpdate,
+} from "@/types/billing";
 
 // ======================================================
 // BASE URL
@@ -312,14 +317,40 @@ export const api = {
   },
 
   // ====================================================
-  // BILLING
-  // ====================================================
+// BILLING
+// ====================================================
 
-  async getInvoices() {
-    await delay();
+async getBillings() {
+  return apiRequest<Billing[]>("/billing");
+},
 
-    return seedInvoices;
-  },
+async getBilling(id: number) {
+  return apiRequest<Billing>(`/billing/${id}`);
+},
+
+async createBilling(data: BillingCreate) {
+  return apiRequest<Billing>("/billing", {
+    method: "POST",
+
+    body: JSON.stringify(data),
+  });
+},
+
+async updateBilling(id: number, data: BillingUpdate) {
+  return apiRequest<Billing>(`/billing/${id}`, {
+    method: "PUT",
+
+    body: JSON.stringify(data),
+  });
+},
+
+async deleteBilling(id: number) {
+  return apiRequest<{
+    message: string;
+  }>(`/billing/${id}`, {
+    method: "DELETE",
+  });
+},
 
   // ====================================================
   // LAB
