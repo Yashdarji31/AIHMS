@@ -1,42 +1,309 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Receipt, Download, CreditCard, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+
+import {
+  Receipt,
+  ClipboardList,
+} from "lucide-react";
+
 import { PageHeader } from "@/components/app/page-header";
 import { StatCard } from "@/components/app/stat-card";
-import { DataTable } from "@/components/app/data-table";
-import { StatusBadge } from "@/components/app/status-badge";
-import { Button } from "@/components/ui/button";
+
+import BillingTable from "@/components/billing/BillingTable";
+import BillingForm from "@/components/billing/BillingForm";
+import EditBillingDialog from "@/components/billing/EditBillingDialog";
+import DeleteBillingDialog from "@/components/billing/DeleteBillingDialog";
+
 import { api } from "@/lib/api";
 
-export const Route = createFileRoute("/_app/billing")({
-  head: () => ({ meta: [{ title: "Billing — AIHMS" }] }),
+import type { Billing } from "@/types/billing";
+import type { User } from "@/types/user";
+
+
+// ======================================================
+// ROUTE
+// ======================================================
+
+export const Route = createFileRoute(
+  "/_app/billing"
+)({
+  head: () => ({
+    meta: [
+      {
+        title: "Billing — AIHMS",
+      },
+    ],
+  }),
+
   component: BillingPage,
 });
 
+
+// ======================================================
+// PAGE
+// ======================================================
+
 function BillingPage() {
-  const { data = [] } = useQuery({ queryKey: ["invoices"], queryFn: api.getInvoices });
-  const total = data.reduce((s, i) => s + i.amount, 0);
-  const paid = data.filter((i) => i.status === "Paid").reduce((s, i) => s + i.amount, 0);
-  return (
-    <div>
-      <PageHeader title="Billing" description="Invoices, payments and insurance claims." actions={<Button><Receipt className="h-4 w-4" /> New invoice</Button>} />
-      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Invoices" value={data.length} icon={Receipt} tone="primary" />
-        <StatCard label="Total billed" value={`₹${(total/1000).toFixed(1)}k`} icon={CreditCard} tone="info" />
-        <StatCard label="Collected" value={`₹${(paid/1000).toFixed(1)}k`} icon={CreditCard} tone="success" />
-        <StatCard label="Insurance claims" value={18} icon={ShieldCheck} tone="warning" />
+
+  // ====================================================
+  // STATE
+  // ====================================================
+
+  const [
+    editingBilling,
+    setEditingBilling,
+  ] = useState<Billing | null>(null);
+
+  const [
+    editOpen,
+    setEditOpen,
+  ] = useState(false);
+
+  const [
+    deleteBilling,
+    setDeleteBilling,
+  ] = useState<Billing | null>(null);
+
+  const [
+    deleteOpen,
+    setDeleteOpen,
+  ] = useState(false);
+
+
+  // ====================================================
+  // CURRENT USER
+  // ====================================================
+
+  const {
+    data: currentUser,
+    isLoading: userLoading,
+  } = useQuery<User>({
+    queryKey: ["current-user"],
+    queryFn: api.getCurrentUser,
+  });
+
+
+  // ====================================================
+  // BILLING
+  // ====================================================
+
+  const {
+    data: billings = [],
+    isLoading: billingLoading,
+    isError,
+    error,
+  } = useQuery<Billing[]>({
+    queryKey: ["billings"],
+    queryFn: api.getBillings,
+  });
+
+
+  // ====================================================
+  // APPOINTMENTS
+  // ====================================================
+
+  const {
+    data: appointments = [],
+    isLoading: appointmentsLoading,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: api.getAppointments,
+  });
+
+
+  // ====================================================
+  // LOADING
+  // ====================================================
+
+  if (
+    userLoading ||
+    billingLoading ||
+    appointmentsLoading
+  ) {
+    return (
+      <div className="flex min-h-[75] items-center justify-center">
+        <p className="text-sm text-muted-foreground">
+          Loading billing records...
+        </p>
       </div>
-      <DataTable rows={data} searchKeys={["patient","id","method"] as const as any}
-        columns={[
-          { key: "id", header: "Invoice" },
-          { key: "patient", header: "Patient" },
-          { key: "date", header: "Date" },
-          { key: "amount", header: "Amount", cell: (r) => `₹${r.amount.toLocaleString()}` },
-          { key: "method", header: "Method" },
-          { key: "status", header: "Status", cell: (r) => <StatusBadge status={r.status} /> },
-          { key: "actions", header: "", cell: () => <Button variant="ghost" size="sm"><Download className="h-4 w-4" /></Button> },
-        ]}
+    );
+  }
+
+
+  // ====================================================
+  // ERROR
+  // ====================================================
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6">
+
+        <h2 className="font-semibold text-destructive">
+          Failed to load billing records
+        </h2>
+
+        <p className="mt-1 text-sm text-muted-foreground">
+          {error instanceof Error
+            ? error.message
+            : "Something went wrong."}
+        </p>
+
+      </div>
+    );
+  }
+
+
+  // ====================================================
+  // ROLE
+  // ====================================================
+
+  const role = currentUser?.role;
+
+
+  // Admin can create billing records
+  const canCreate =
+    role === "admin";
+
+
+  // Admin can edit billing records
+  const canEdit =
+    role === "admin";
+
+
+  // Admin can delete billing records
+  const canDelete =
+    role === "admin";
+
+
+  // ====================================================
+  // EDIT HANDLER
+  // ====================================================
+
+  function handleEdit(
+    billing: Billing
+  ) {
+    setEditingBilling(billing);
+    setEditOpen(true);
+  }
+
+
+  // ====================================================
+  // DELETE HANDLER
+  // ====================================================
+
+  function handleDelete(
+    billing: Billing
+  ) {
+    setDeleteBilling(billing);
+    setDeleteOpen(true);
+  }
+
+
+  // ====================================================
+  // TOTAL REVENUE
+  // ====================================================
+
+  const totalAmount = billings.reduce(
+    (total, billing) =>
+      total + Number(billing.amount),
+    0
+  );
+
+
+  // ====================================================
+  // UI
+  // ====================================================
+
+  return (
+    <div className="space-y-6">
+
+      {/* ================================================
+          HEADER
+      ================================================= */}
+
+      <PageHeader
+        title="Billing"
+        description="View and manage patient billing records."
+
+        actions={
+          canCreate ? (
+            <BillingForm
+              appointments={appointments}
+            />
+          ) : undefined
+        }
       />
+
+
+      {/* ================================================
+          STATISTICS
+      ================================================= */}
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        <StatCard
+          label="Total Bills"
+          value={billings.length}
+          icon={Receipt}
+        />
+
+        <StatCard
+          label="Total Amount"
+          value={`₹${totalAmount.toFixed(2)}`}
+          icon={ClipboardList}
+          tone="info"
+        />
+
+      </div>
+
+
+      {/* ================================================
+          BILLING TABLE
+      ================================================= */}
+
+      <BillingTable
+        billings={billings}
+
+        onEdit={
+          canEdit
+            ? handleEdit
+            : undefined
+        }
+
+        onDelete={
+          canDelete
+            ? handleDelete
+            : undefined
+        }
+      />
+
+
+      {/* ================================================
+          EDIT DIALOG
+      ================================================= */}
+
+      {canEdit && (
+        <EditBillingDialog
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          billing={editingBilling}
+        />
+      )}
+
+
+      {/* ================================================
+          DELETE DIALOG
+      ================================================= */}
+
+      {canDelete && (
+        <DeleteBillingDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          billing={deleteBilling}
+        />
+      )}
+
     </div>
   );
 }
