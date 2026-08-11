@@ -58,3 +58,9 @@ class Doctor(Base):
         back_populates="doctor",
         cascade="all, delete"
     )
+    
+    billings = relationship(
+    "Billing",
+    back_populates="doctor",
+    cascade="all, delete-orphan"
+    )

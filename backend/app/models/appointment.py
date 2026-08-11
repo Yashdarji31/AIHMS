@@ -71,3 +71,10 @@ class Appointment(Base):
         "Patient",
         back_populates="appointments"
     )
+    
+    billing = relationship(
+    "Billing",
+    back_populates="appointment",
+    uselist=False,
+    cascade="all, delete"
+    )

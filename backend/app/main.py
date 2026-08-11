@@ -8,6 +8,7 @@ from app.routers.patient import router as patient_router
 from app.routers import doctor
 from app.routers import appointment
 from app.routers import medical_record
+from app.routers import billing
 
 # Import all models before create_all()
 import app.models
@@ -38,6 +39,8 @@ app.include_router(patient_router)
 app.include_router(doctor.router)
 app.include_router(appointment.router)
 app.include_router(medical_record.router)
+app.include_router(billing.router)
+
 
 @app.get("/")
 def home():
