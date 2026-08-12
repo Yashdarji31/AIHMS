@@ -5,6 +5,8 @@ import { useState } from "react";
 import {
   Receipt,
   ClipboardList,
+  CircleCheck,
+  Clock,
 } from "lucide-react";
 
 import { PageHeader } from "@/components/app/page-header";
@@ -205,6 +207,30 @@ function BillingPage() {
   // ====================================================
 
   const totalAmount = billings.reduce(
+  (total, billing) =>
+    total + Number(billing.amount),
+  0
+);
+
+
+const paidAmount = billings
+  .filter(
+    (billing) =>
+      billing.payment_status === "paid"
+  )
+  .reduce(
+    (total, billing) =>
+      total + Number(billing.amount),
+    0
+  );
+
+
+const pendingAmount = billings
+  .filter(
+    (billing) =>
+      billing.payment_status === "pending"
+  )
+  .reduce(
     (total, billing) =>
       total + Number(billing.amount),
     0
@@ -240,22 +266,39 @@ function BillingPage() {
           STATISTICS
       ================================================= */}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-        <StatCard
-          label="Total Bills"
-          value={billings.length}
-          icon={Receipt}
-        />
+  <StatCard
+    label="Total Bills"
+    value={billings.length}
+    icon={Receipt}
+  />
 
-        <StatCard
-          label="Total Amount"
-          value={`₹${totalAmount.toFixed(2)}`}
-          icon={ClipboardList}
-          tone="info"
-        />
 
-      </div>
+  <StatCard
+    label="Total Revenue"
+    value={`₹${totalAmount.toFixed(2)}`}
+    icon={ClipboardList}
+    tone="info"
+  />
+
+
+  <StatCard
+    label="Paid Amount"
+    value={`₹${paidAmount.toFixed(2)}`}
+    icon={CircleCheck}
+    tone="success"
+  />
+
+
+  <StatCard
+    label="Pending Amount"
+    value={`₹${pendingAmount.toFixed(2)}`}
+    icon={Clock}
+    tone="warning"
+  />
+
+</div>
 
 
       {/* ================================================
