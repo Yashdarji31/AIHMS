@@ -316,7 +316,7 @@ export const api = {
     return seedBeds;
   },
 
-  // ====================================================
+// ====================================================
 // BILLING
 // ====================================================
 
@@ -352,6 +352,78 @@ async deleteBilling(id: number) {
   });
 },
 
+
+// ====================================================
+// DOWNLOAD INVOICE PDF
+// ====================================================
+
+async downloadInvoice(id: number) {
+
+  const token = getToken();
+
+  const response = await fetch(
+    `${BASE_URL}/billing/${id}/invoice`,
+    {
+      method: "GET",
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+
+  if (!response.ok) {
+
+    let message =
+      "Failed to download invoice";
+
+    try {
+
+      const error =
+        await response.json();
+
+      message =
+        error.detail || message;
+
+    } catch {
+      // default error
+    }
+
+    throw new Error(message);
+  }
+
+
+  const blob =
+    await response.blob();
+
+
+  const url =
+    window.URL.createObjectURL(blob);
+
+
+  const link =
+    document.createElement("a");
+
+
+  link.href = url;
+
+
+  link.download =
+    `invoice_${id}.pdf`;
+
+
+  document.body.appendChild(link);
+
+
+  link.click();
+
+
+  link.remove();
+
+
+  window.URL.revokeObjectURL(url);
+},
   // ====================================================
   // LAB
   // ====================================================
