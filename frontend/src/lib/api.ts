@@ -266,35 +266,21 @@ export const api = {
   },
 
   // ====================================================
-  // ANALYTICS
-  // ====================================================
+// ANALYTICS
+// ====================================================
 
-  async getAnalytics() {
-    await delay();
-
-    return {
-      kpis: {
-        totalPatients: 0,
-        doctors: 0,
-        revenueMTD: 0,
-        admissions: 0,
-        discharges: 0,
-        avgWaitMin: 0,
-        bedsAvailable: 0,
-        medicinesInStock: 0,
-      },
-
-      monthlyRevenue: [],
-
-      diseaseDistribution: [],
-
-      dailyPatients: [],
-
-      bedOccupancy: [],
-
-      healthTrend: [],
+async getAnalytics() {
+  return apiRequest<{
+    kpis: {
+      totalPatients: number;
+      doctors: number;
+      revenueMTD: number;
+      appointments: number;
+      completedAppointments: number;
     };
-  },
+  }>("/analytics");
+},
+  
 
   // ====================================================
   // MEDICINES
