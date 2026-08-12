@@ -19,7 +19,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.4
 jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
-MarkupSafe==2.1.5
+MarkupSafe==2.1.5   
 narwhals==2.13.0
 numpy==2.3.5
 packaging==25.0
