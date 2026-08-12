@@ -9,6 +9,7 @@ from app.routers import doctor
 from app.routers import appointment
 from app.routers import medical_record
 from app.routers import billing
+from app.routers import analytics
 
 # Import all models before create_all()
 import app.models
@@ -34,12 +35,19 @@ app.add_middleware(
 )
 # ----------------------------------------------
 
-app.include_router(auth_router)
-app.include_router(patient_router)
+app.include_router(auth.router)
+
+app.include_router(patient.router)
+
 app.include_router(doctor.router)
+
 app.include_router(appointment.router)
+
 app.include_router(medical_record.router)
+
 app.include_router(billing.router)
+
+app.include_router(analytics.router)
 
 
 @app.get("/")
