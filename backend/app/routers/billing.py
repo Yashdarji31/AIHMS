@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
@@ -17,6 +18,7 @@ from app.schemas.billing import (
 
 from app.auth.dependencies import require_roles
 
+from app.services.invoice_service import generate_invoice_pdf
 
 router = APIRouter(
     prefix="/billing",
@@ -388,3 +390,58 @@ def delete_billing(
         "message":
         "Billing deleted successfully."
     }
+    
+    # ======================================================
+# Download Invoice PDF
+#
+# Admin   → Any
+# Doctor  → Own
+# Patient → Own
+# ======================================================
+
+@router.get(
+    "/{billing_id}/invoice"
+)
+def download_invoice(
+    billing_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        require_roles(
+            "admin",
+            "doctor",
+            "patient"
+        )
+    )
+):
+
+    billing = (
+        db.query(Billing)
+        .filter(
+            Billing.id == billing_id
+        )
+        .first()
+    )
+
+
+    if not billing:
+        raise HTTPException(
+            status_code=404,
+            detail="Billing record not found."
+        )
+
+
+    # Generate PDF
+
+    pdf = generate_invoice_pdf(
+        billing
+    )
+
+
+    return StreamingResponse(
+        pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition":
+            f"attachment; filename=invoice_{billing.id}.pdf"
+        }
+    )
