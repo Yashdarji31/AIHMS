@@ -275,9 +275,43 @@ async getAnalytics() {
       totalPatients: number;
       doctors: number;
       revenueMTD: number;
+      admissions: number;
+      discharges: number;
+      avgWaitMin: number;
+      bedsAvailable: number;
+      medicinesInStock: number;
       appointments: number;
       completedAppointments: number;
     };
+
+    monthlyRevenue: {
+      month: string;
+      value: number;
+    }[];
+
+    diseaseDistribution: {
+      name: string;
+      value: number;
+    }[];
+
+    dailyPatients: {
+      day: string;
+      value: number;
+    }[];
+
+    bedOccupancy: {
+      ward: string;
+      occupied: number;
+      available: number;
+    }[];
+
+    healthTrend: {
+      day: string;
+      bp: number;
+      sugar: number;
+      pulse: number;
+    }[];
+
   }>("/analytics");
 },
   

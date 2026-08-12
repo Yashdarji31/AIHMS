@@ -201,12 +201,12 @@ function DashboardPage() {
                 <div key={a.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-6 py-3">
                   <div className="min-w-0">
                     <div className="truncate text-sm font-medium">{a.patient} <span className="text-muted-foreground">·</span> <span className="text-muted-foreground">{a.doctor}</span></div>
-                    <div className="truncate text-xs text-muted-foreground">{a.department} · {a.reason}</div>
+                    <div className="truncate text-xs text-muted-foreground">{a.specialization} · {a.reason}</div>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     <div className="text-right text-xs">
-                      <div className="font-medium">{a.time}</div>
-                      <div className="text-muted-foreground">{a.date}</div>
+                      <div className="font-medium"><div className="font-medium">{a.appointment_time}</div></div>
+                      <div className="text-muted-foreground"><div className="text-muted-foreground">{a.appointment_date}</div></div>
                     </div>
                     <StatusBadge status={a.status} />
                   </div>

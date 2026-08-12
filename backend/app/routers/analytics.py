@@ -85,22 +85,42 @@ def get_analytics(
 
     return {
 
-        "kpis": {
+    "kpis": {
 
-            "totalPatients":
-                total_patients,
+        "totalPatients": total_patients,
 
-            "doctors":
-                total_doctors,
+        "doctors": total_doctors,
 
-            "revenueMTD":
-                total_revenue,
+        "revenueMTD": total_revenue,
 
-            "appointments":
-                total_appointments,
+        "appointments": total_appointments,
 
-            "completedAppointments":
-                completed_appointments
-        }
+        "completedAppointments": completed_appointments,
 
-    }
+        "admissions": 0,
+
+        "discharges": 0,
+
+        "avgWaitMin": 0,
+
+        "bedsAvailable": 0,
+
+        "medicinesInStock": 0
+    },
+
+
+    "monthlyRevenue": [],
+
+
+    "diseaseDistribution": [],
+
+
+    "dailyPatients": [],
+
+
+    "bedOccupancy": [],
+
+
+    "healthTrend": []
+
+}
