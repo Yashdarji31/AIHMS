@@ -1,5 +1,5 @@
 import type { Billing } from "@/types/billing";
-
+import { Download } from "lucide-react";
 import { DataTable } from "@/components/app/data-table";
 import { Button } from "@/components/ui/button";
 
@@ -13,12 +13,17 @@ interface Props {
   onDelete?: (
     billing: Billing
   ) => void;
+
+  onDownload?: (
+    billing: Billing
+  ) => void;
 }
 
 export default function BillingTable({
   billings,
   onEdit,
   onDelete,
+  onDownload,
 }: Props) {
   return (
     <DataTable
@@ -89,31 +94,44 @@ export default function BillingTable({
           cell: (billing) => (
             <div className="flex gap-2">
 
-              {onEdit && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    onEdit(billing)
-                  }
-                >
-                  Edit
-                </Button>
-              )}
+  {onDownload && (
+    <Button
+      size="sm"
+      variant="secondary"
+      onClick={() =>
+        onDownload(billing)
+      }
+    >
+      <Download className="mr-1 h-4 w-4" />
+      PDF
+    </Button>
+  )}
 
-              {onDelete && (
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() =>
-                    onDelete(billing)
-                  }
-                >
-                  Delete
-                </Button>
-              )}
+  {onEdit && (
+    <Button
+      size="sm"
+      variant="outline"
+      onClick={() =>
+        onEdit(billing)
+      }
+    >
+      Edit
+    </Button>
+  )}
 
-            </div>
+  {onDelete && (
+    <Button
+      size="sm"
+      variant="destructive"
+      onClick={() =>
+        onDelete(billing)
+      }
+    >
+      Delete
+    </Button>
+  )}
+
+</div>
           ),
         },
       ]}

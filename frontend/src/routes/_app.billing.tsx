@@ -21,6 +21,7 @@ import { api } from "@/lib/api";
 
 import type { Billing } from "@/types/billing";
 import type { User } from "@/types/user";
+import { toast } from "sonner";
 
 
 // ======================================================
@@ -201,6 +202,32 @@ function BillingPage() {
     setDeleteOpen(true);
   }
 
+   async function handleDownload(
+  billing: Billing
+) {
+  try {
+
+    await api.downloadInvoice(
+      billing.id
+    );
+
+    toast.success(
+      "Invoice downloaded successfully"
+    );
+
+  } catch(error){
+
+    if(error instanceof Error){
+      toast.error(error.message);
+    }
+    else{
+      toast.error(
+        "Failed to download invoice"
+      );
+    }
+
+  }
+}
 
   // ====================================================
   // TOTAL REVENUE
@@ -306,7 +333,11 @@ const pendingAmount = billings
       ================================================= */}
 
       <BillingTable
-        billings={billings}
+  billings={billings}
+
+  onDownload={
+    handleDownload
+  }
 
         onEdit={
           canEdit
