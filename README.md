@@ -75,3 +75,22 @@ Roles:
 
 
 ## Project Structure
+
+
+
+## Installation
+
+### Backend
+
+```bash
+cd backend
+
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload
+
+cd frontend
+
+npm install
+
+npm run dev
