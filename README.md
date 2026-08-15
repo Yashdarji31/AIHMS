@@ -1,15 +1,57 @@
-# AIHMS - AI Hospital Management System
+# AIHMS - AI Hospital Management System 🚀
 
-## Overview
+AIHMS is a full-stack hospital management system that digitizes healthcare operations including patient management, doctor management, appointments, medical records, billing, invoice generation, and analytics.
 
-AIHMS is a full-stack hospital management system designed to digitize hospital operations including:
+## Features
 
-- Patient management
-- Doctor management
-- Appointment scheduling
-- Medical records
-- Billing and invoice generation
-- Analytics dashboard
+### Authentication & Authorization
+- JWT based authentication
+- Role-based access control
+
+Roles:
+- Admin
+- Doctor
+- Patient
+
+
+## Modules
+
+### Patient Management
+- Patient registration
+- Patient profile management
+- Medical history tracking
+
+
+### Doctor Management
+- Doctor profiles
+- Specialization management
+- Appointment handling
+
+
+### Appointment Management
+- Book appointments
+- Update appointment status
+- Track doctor-patient interactions
+
+
+### Medical Records
+- Create medical records
+- Update records
+- Patient medical history access
+
+
+### Billing System
+- Generate bills
+- Update payments
+- Delete invoices
+- Download PDF invoices
+
+
+### Analytics Dashboard
+- Total patients
+- Total doctors
+- Revenue tracking
+- Appointment statistics
 
 
 ## Tech Stack
@@ -27,86 +69,9 @@ AIHMS is a full-stack hospital management system designed to digitize hospital o
 - MySQL
 - JWT Authentication
 
-### Other
-- ReportLab PDF generation
-- REST APIs
-
-
-## Features
-
-### Authentication
-- JWT based login
-- Role based access control
-
-Roles:
-- Admin
-- Doctor
-- Patient
-
-
-### Appointment Management
-
-- Create appointments
-- Update appointments
-- Track status
-
-
-### Medical Records
-
-Doctors can:
-- Create records
-- Update records
-
-Patients can:
-- View medical history
-
-
-### Billing
-
-Admin can:
-- Create bills
-- Update bills
-- Delete bills
-- Generate invoice PDFs
-
-
-### Analytics Dashboard
-
-Provides:
-
-- Total patients
-- Doctors count
-- Revenue tracking
-- Appointment statistics
+### Tools
+- Git & GitHub
+- ReportLab PDF Generator
 
 
 ## Project Structure
-
-AIHMS
-
-backend/
-- app/
-  - routers/
-  - models/
-  - schemas/
-  - services/
-
-
-frontend/
-- src/
-  - components/
-  - routes/
-  - lib/
-
-
-## Installation
-
-
-Backend:
-
-```bash
-cd backend
-
-pip install -r requirements.txt
-
-uvicorn app.main:app --reload
