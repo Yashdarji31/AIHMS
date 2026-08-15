@@ -1,35 +1,224 @@
 import type { LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+
 export function StatCard({
-  label, value, delta, icon: Icon, tone = "primary",
+
+  label,
+
+  value,
+
+  delta,
+
+  icon: Icon,
+
+  tone = "primary",
+
 }: {
+
   label: string;
+
   value: string | number;
+
   delta?: string;
+
   icon: LucideIcon;
-  tone?: "primary" | "success" | "warning" | "info" | "destructive";
+
+  tone?:
+  | "primary"
+  | "success"
+  | "warning"
+  | "info"
+  | "destructive";
+
 }) {
-  const toneMap: Record<string, string> = {
-    primary: "bg-primary/10 text-primary",
-    success: "bg-[color:var(--color-success)]/15 text-[color:var(--color-success)]",
-    warning: "bg-[color:var(--color-warning)]/15 text-[color:var(--color-warning)]",
-    info: "bg-[color:var(--color-info)]/15 text-[color:var(--color-info)]",
-    destructive: "bg-destructive/10 text-destructive",
+
+
+  const toneMap = {
+
+
+    primary:
+      "from-blue-500/20 to-blue-500/5 text-blue-600",
+
+
+    success:
+      "from-green-500/20 to-green-500/5 text-green-600",
+
+
+    warning:
+      "from-yellow-500/20 to-yellow-500/5 text-yellow-600",
+
+
+    info:
+      "from-cyan-500/20 to-cyan-500/5 text-cyan-600",
+
+
+    destructive:
+      "from-red-500/20 to-red-500/5 text-red-600",
+
+
   };
+
+
+
   return (
-    <Card className="transition hover:shadow-md">
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-xl", toneMap[tone])}>
-          <Icon className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
-          <div className="mt-0.5 truncate text-2xl font-bold">{value}</div>
-          {delta && <div className="mt-0.5 text-xs text-muted-foreground">{delta}</div>}
-        </div>
-      </CardContent>
-    </Card>
-  );
+
+    <motion.div
+
+      whileHover={{
+        y: -6,
+      }}
+
+      transition={{
+        duration: 0.2
+      }}
+
+    >
+
+
+      <Card
+
+        className="
+overflow-hidden
+border
+bg-card
+shadow-sm
+
+hover:shadow-xl
+
+transition
+"
+
+      >
+
+
+        <CardContent
+
+          className="
+p-5
+"
+
+        >
+
+
+          <div
+
+            className="
+flex
+items-center
+justify-between
+"
+
+          >
+
+
+            <div>
+
+
+              <p
+
+                className="
+text-sm
+font-medium
+text-muted-foreground
+"
+
+              >
+
+                {label}
+
+              </p>
+
+
+
+              <h2
+
+                className="
+mt-2
+text-3xl
+font-bold
+tracking-tight
+"
+
+              >
+
+                {value}
+
+              </h2>
+
+
+
+              {
+                delta &&
+
+                <p
+
+                  className="
+mt-2
+text-xs
+text-muted-foreground
+"
+
+                >
+
+                  {delta}
+
+                </p>
+
+              }
+
+
+            </div>
+
+
+
+            <div
+
+              className={cn(
+
+                "h-12 w-12",
+
+                "rounded-2xl",
+
+                "grid place-items-center",
+
+                "bg-gradient-to-br",
+
+                toneMap[tone]
+
+              )}
+
+            >
+
+
+              <Icon
+
+                className="
+h-6
+w-6
+"
+
+              />
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </CardContent>
+
+
+      </Card>
+
+
+    </motion.div>
+
+  )
+
 }
