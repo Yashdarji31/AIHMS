@@ -1,60 +1,426 @@
-import { Bell, Moon, Search, Settings, Sun, User } from "lucide-react";
+import {
+  Bell,
+  Moon,
+  Search,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react";
+
 import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { SidebarTrigger } from "@/components/ui/sidebar";
+
 import { useTheme } from "@/lib/theme";
+
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Badge } from "@/components/ui/badge";
 
+
 export function Topbar() {
-  const { theme, toggle } = useTheme();
+
+  const {
+    theme,
+    toggle,
+  } = useTheme();
+
+
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-3 backdrop-blur">
+
+    <header
+      className="
+      sticky
+      top-0
+      z-30
+
+      flex
+      h-16
+      items-center
+      gap-4
+
+      border-b
+
+      bg-background/90
+
+      px-6
+
+      backdrop-blur
+
+      "
+    >
+
+
+      {/* Mobile Sidebar Button */}
+
       <SidebarTrigger />
-      <div className="relative ml-2 hidden max-w-md flex-1 md:block">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Search patients, doctors, records…" className="h-9 pl-9" aria-label="Global search" />
+
+
+
+      {/* Search */}
+
+      <div
+        className="
+        relative
+        hidden
+        w-full
+        max-w-lg
+        md:block
+        "
+      >
+
+        <Search
+          className="
+          absolute
+          left-3
+          top-1/2
+          h-4
+          w-4
+          -translate-y-1/2
+          text-muted-foreground
+          "
+        />
+
+
+        <Input
+
+          placeholder="
+          Search patients, doctors, appointments...
+          "
+
+          className="
+          h-10
+          rounded-xl
+          pl-10
+          "
+
+        />
+
+
       </div>
-      <div className="ml-auto flex items-center gap-1">
-        <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={toggle}>
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+
+
+
+
+      <div
+        className="
+        ml-auto
+        flex
+        items-center
+        gap-2
+        "
+      >
+
+
+        {/* Theme */}
+
+        <Button
+
+          variant="ghost"
+
+          size="icon"
+
+          className="
+          rounded-full
+          "
+
+          onClick={toggle}
+
+        >
+
+          {
+            theme === "dark"
+
+            ?
+
+            <Sun
+              className="
+              h-5
+              w-5
+              "
+            />
+
+            :
+
+            <Moon
+              className="
+              h-5
+              w-5
+              "
+            />
+          }
+
+
         </Button>
-        <Button variant="ghost" size="icon" aria-label="Notifications" asChild>
+
+
+
+
+        {/* Notification */}
+
+        <Button
+
+          variant="ghost"
+
+          size="icon"
+
+          className="
+          relative
+          rounded-full
+          "
+
+          asChild
+
+        >
+
           <Link to="/notifications">
-            <span className="relative">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -right-1 -top-1 grid h-3.5 w-3.5 place-items-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">3</span>
+
+
+            <Bell
+              className="
+              h-5
+              w-5
+              "
+            />
+
+
+            <span
+
+              className="
+              absolute
+
+              right-1
+              top-1
+
+              flex
+
+              h-4
+              w-4
+
+              items-center
+              justify-center
+
+              rounded-full
+
+              bg-red-500
+
+              text-[10px]
+
+              font-bold
+
+              text-white
+
+              "
+
+            >
+
+              3
+
             </span>
+
+
           </Link>
+
+
         </Button>
-        <Button variant="ghost" size="icon" aria-label="Settings" asChild>
-          <Link to="/settings"><Settings className="h-4 w-4" /></Link>
+
+
+
+
+        {/* Settings */}
+
+        <Button
+
+          variant="ghost"
+
+          size="icon"
+
+          className="
+          rounded-full
+          "
+
+          asChild
+
+        >
+
+          <Link to="/settings">
+
+            <Settings
+              className="
+              h-5
+              w-5
+              "
+            />
+
+          </Link>
+
         </Button>
+
+
+
+
+        {/* Profile */}
+
         <DropdownMenu>
+
+
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Profile">
-              <User className="h-4 w-4" />
+
+
+            <Button
+
+              variant="outline"
+
+              className="
+              flex
+              items-center
+              gap-2
+              rounded-xl
+              "
+
+            >
+
+              <User
+                className="
+                h-4
+                w-4
+                "
+              />
+
+
+              <span
+                className="
+                hidden
+                md:block
+                "
+              >
+
+                Admin
+
+              </span>
+
+
             </Button>
+
+
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+
+
+
+          <DropdownMenuContent
+
+            align="end"
+
+            className="
+            w-64
+            rounded-xl
+            "
+
+          >
+
+
             <DropdownMenuLabel>
-              <div className="text-sm font-medium">Dr. Admin</div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                admin@aihms.io <Badge variant="secondary" className="h-4 px-1 text-[9px]">ADMIN</Badge>
+
+
+              <div
+                className="
+                font-semibold
+                "
+              >
+
+                Dr. Admin
+
               </div>
+
+
+              <div
+                className="
+                mt-1
+                flex
+                items-center
+                gap-2
+                text-xs
+                text-muted-foreground
+                "
+              >
+
+                admin@aihms.io
+
+
+                <Badge>
+
+                  ADMIN
+
+                </Badge>
+
+
+              </div>
+
+
             </DropdownMenuLabel>
+
+
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild><Link to="/profile">Profile</Link></DropdownMenuItem>
-            <DropdownMenuItem asChild><Link to="/settings">Settings</Link></DropdownMenuItem>
+
+
+            <DropdownMenuItem asChild>
+
+              <Link to="/profile">
+
+                Profile
+
+              </Link>
+
+            </DropdownMenuItem>
+
+
+
+            <DropdownMenuItem asChild>
+
+              <Link to="/settings">
+
+                Settings
+
+              </Link>
+
+            </DropdownMenuItem>
+
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild><Link to="/auth/login">Log out</Link></DropdownMenuItem>
+
+
+            <DropdownMenuItem asChild>
+
+              <Link to="/auth/login">
+
+                Logout
+
+              </Link>
+
+            </DropdownMenuItem>
+
+
           </DropdownMenuContent>
+
+
         </DropdownMenu>
+
+
       </div>
+
+
     </header>
+
   );
 }
