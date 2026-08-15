@@ -15,6 +15,9 @@ import { PageHeader } from "@/components/app/page-header";
 import { StatCard } from "@/components/app/stat-card";
 import { StatusBadge } from "@/components/app/status-badge";
 import { api } from "@/lib/api";
+import StatsGrid from "@/components/dashboard/StatsGrid";
+import RevenueChart from "@/components/dashboard/RevenueChart";
+import PatientChart from "@/components/dashboard/PatientChart";
 
 export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({ meta: [{ title: "Executive Dashboard — AIHMS" }] }),
