@@ -76,7 +76,20 @@ Roles:
 
 ## Project Structure
 
-
+AIHMS
+│
+├── backend
+│ └── app
+│ ├── routers
+│ ├── models
+│ ├── schemas
+│ └── services
+│
+└── frontend
+└── src
+├── components
+├── routes
+└── lib
 
 ## Installation
 
