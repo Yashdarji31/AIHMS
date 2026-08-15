@@ -7,6 +7,7 @@ import {
 }
     from "recharts";
 
+import { motion } from "framer-motion";
 
 const colors = [
     "var(--color-chart-1)",
@@ -24,13 +25,30 @@ export default function DiseaseChart({
 
     return (
 
-        <div className="
+        <motion.div
+
+            className="
 rounded-xl
 border
 bg-card
 p-5
-">
+"
 
+            initial={{
+                opacity: 0,
+                scale: 0.95
+            }}
+
+            animate={{
+                opacity: 1,
+                scale: 1
+            }}
+
+            transition={{
+                duration: 0.4
+            }}
+
+        >
 
             <h2 className="font-semibold mb-4">
                 Disease Distribution
@@ -83,7 +101,7 @@ p-5
             </div>
 
 
-        </div>
+        </motion.div>
 
     )
 

@@ -28,7 +28,7 @@ import RevenueChart
 import DiseaseChart
   from "@/components/dashboard/DiseaseChart";
 
-
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute(
   "/_app/dashboard"
@@ -80,7 +80,25 @@ Loading dashboard...
 
 return (
 
-<div className="space-y-6">
+<motion.div
+
+className="space-y-6"
+
+initial={{
+ opacity:0,
+ y:20
+}}
+
+animate={{
+ opacity:1,
+ y:0
+}}
+
+transition={{
+ duration:0.5
+}}
+
+>
 
 
 <PageHeader
@@ -132,7 +150,7 @@ data={analytics.diseaseDistribution}
 </div>
 
 
-</div>
+</motion.div>
 
 )
 

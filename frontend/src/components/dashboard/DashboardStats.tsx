@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 import { StatCard } from "@/components/app/stat-card";
-
+import { motion } from "framer-motion";
 
 interface Props {
  analytics:any;
@@ -26,21 +26,55 @@ export default function DashboardStats({
 
 return (
 
-<div className="
+<motion.div
+
+className="
 grid
 grid-cols-1
 sm:grid-cols-2
 lg:grid-cols-4
 gap-4
-">
+"
 
+
+initial={{
+ opacity:0,
+ y:20
+}}
+
+animate={{
+ opacity:1,
+ y:0
+}}
+
+transition={{
+ duration:0.5
+}}
+
+>
+
+<motion.div
+  whileHover={{
+    y: -5,
+    scale: 1.02,
+  }}
+
+  transition={{
+    duration: 0.2,
+  }}
+>
 
 <StatCard
-label="Total Patients"
-value={analytics.kpis.totalPatients}
-icon={Users}
-tone="primary"
+
+ label="Total Patients"
+
+ value={analytics.kpis.totalPatients}
+
+ icon={Users}
+
 />
+
+</motion.div>
 
 
 <StatCard
@@ -99,7 +133,7 @@ tone="destructive"
 />
 
 
-</div>
+</motion.div>
 
 )
 

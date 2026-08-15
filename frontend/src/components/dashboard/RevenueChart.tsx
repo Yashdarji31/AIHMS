@@ -8,6 +8,7 @@ import {
  ResponsiveContainer
 } from "recharts";
 
+import { motion } from "framer-motion";
 
 export default function RevenueChart({
 data=[]
@@ -18,12 +19,30 @@ data:any[]
 
 return (
 
-<div className="
+<motion.div
+
+className="
 rounded-xl
 border
 bg-card
 p-5
-">
+"
+
+initial={{
+opacity:0,
+scale:0.95
+}}
+
+animate={{
+opacity:1,
+scale:1
+}}
+
+transition={{
+duration:0.4
+}}
+
+>
 
 
 <h2 className="
@@ -86,7 +105,7 @@ fillOpacity={0.2}
 </div>
 
 
-</div>
+</motion.div>
 
 )
 
