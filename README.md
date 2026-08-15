@@ -80,8 +80,6 @@ Roles:
 
 ## Installation
 
-### Backend
-
 ```bash
 cd backend
 
