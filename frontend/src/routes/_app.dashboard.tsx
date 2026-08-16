@@ -21,6 +21,7 @@ import RevenueChart from "@/components/dashboard/RevenueChart";
 import DiseaseChart from "@/components/dashboard/DiseaseChart";
 
 import type { Appointment } from "@/types/appointment";
+import { createFileRoute } from "@tanstack/react-router";
 
 
 // ======================================================
@@ -637,3 +638,10 @@ export default function DashboardPage() {
 
 
 }
+
+
+export const Route = createFileRoute(
+  "/_app/dashboard"
+)({
+  component: DashboardPage,
+});
