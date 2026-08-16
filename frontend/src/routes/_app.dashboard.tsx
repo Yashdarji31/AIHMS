@@ -30,6 +30,9 @@ import DiseaseChart
 
 import { motion } from "framer-motion";
 
+import DashboardSkeleton
+from "@/components/dashboard/DashboardSkeleton";
+
 export const Route = createFileRoute(
   "/_app/dashboard"
 )({
@@ -66,7 +69,10 @@ queryFn:api.getEmergencyCases
 
 
 
-if(isLoading || !analytics)
+if (isLoading || !analytics) {
+  return <DashboardSkeleton />;
+}
+if (!analytics) return null;
 
 return (
 
