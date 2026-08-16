@@ -28,7 +28,6 @@ async def get_current_user(
 ):
     try:
         print("TOKEN RECEIVED:", token)
-        print("SECRET:", SECRET_KEY)
 
         payload = jwt.decode(
             token,
