@@ -102,18 +102,4 @@ def require_roles(*allowed_roles: str) -> Callable:
         return current_user
 
     return role_checker
-<<<<<<< HEAD
-=======
 
-
-# ============================================================
-# DATABASE DEPENDENCY EXPORT
-# ============================================================
-
-__all__ = [
-    "oauth2_scheme",
-    "get_current_user",
-    "require_roles",
-    "get_db",
-]
->>>>>>> e7baa77 (prepare AIHMS for deployment)
