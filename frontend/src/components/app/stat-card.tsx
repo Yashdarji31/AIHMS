@@ -4,221 +4,153 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-
 export function StatCard({
-
   label,
-
   value,
-
   delta,
-
   icon: Icon,
-
   tone = "primary",
-
 }: {
-
   label: string;
-
   value: string | number;
-
   delta?: string;
-
   icon: LucideIcon;
-
   tone?:
-  | "primary"
-  | "success"
-  | "warning"
-  | "info"
-  | "destructive";
-
+    | "primary"
+    | "success"
+    | "warning"
+    | "info"
+    | "destructive";
 }) {
-
-
   const toneMap = {
+    primary: {
+      icon: "bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
+      accent: "bg-blue-500",
+    },
 
+    success: {
+      icon: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400",
+      accent: "bg-emerald-500",
+    },
 
-    primary:
-      "from-blue-500/20 to-blue-500/5 text-blue-600",
+    warning: {
+      icon: "bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400",
+      accent: "bg-amber-500",
+    },
 
+    info: {
+      icon: "bg-cyan-100 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400",
+      accent: "bg-cyan-500",
+    },
 
-    success:
-      "from-green-500/20 to-green-500/5 text-green-600",
-
-
-    warning:
-      "from-yellow-500/20 to-yellow-500/5 text-yellow-600",
-
-
-    info:
-      "from-cyan-500/20 to-cyan-500/5 text-cyan-600",
-
-
-    destructive:
-      "from-red-500/20 to-red-500/5 text-red-600",
-
-
+    destructive: {
+      icon: "bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400",
+      accent: "bg-red-500",
+    },
   };
 
-
+  const colors = toneMap[tone];
 
   return (
-
     <motion.div
-
       whileHover={{
-        y: -6,
+        y: -4,
       }}
-
       transition={{
-        duration: 0.2
+        duration: 0.2,
       }}
-
+      className="h-full"
     >
-
-
       <Card
-
         className="
-overflow-hidden
-border
-bg-card
-shadow-sm
-
-hover:shadow-xl
-
-transition
-"
-
+          relative
+          h-full
+          overflow-hidden
+          border-slate-200
+          bg-white
+          shadow-sm
+          transition-shadow
+          hover:shadow-md
+          dark:border-slate-800
+          dark:bg-slate-900
+        "
       >
+        {/* Top accent */}
 
+        <div
+          className={cn(
+            "absolute left-0 top-0 h-1 w-full",
+            colors.accent
+          )}
+        />
 
-        <CardContent
+        <CardContent className="p-5">
+          <div className="flex items-start justify-between gap-4">
 
-          className="
-p-5
-"
+            {/* Information */}
 
-        >
-
-
-          <div
-
-            className="
-flex
-items-center
-justify-between
-"
-
-          >
-
-
-            <div>
-
+            <div className="min-w-0">
 
               <p
-
                 className="
-text-sm
-font-medium
-text-muted-foreground
-"
-
+                  text-sm
+                  font-medium
+                  text-slate-500
+                  dark:text-slate-400
+                "
               >
-
                 {label}
-
               </p>
 
-
-
               <h2
-
                 className="
-mt-2
-text-3xl
-font-bold
-tracking-tight
-"
-
+                  mt-2
+                  text-3xl
+                  font-bold
+                  tracking-tight
+                  text-slate-900
+                  dark:text-white
+                "
               >
-
                 {value}
-
               </h2>
 
-
-
-              {
-                delta &&
-
+              {delta && (
                 <p
-
                   className="
-mt-2
-text-xs
-text-muted-foreground
-"
-
+                    mt-2
+                    text-xs
+                    font-medium
+                    text-slate-500
+                    dark:text-slate-400
+                  "
                 >
-
                   {delta}
-
                 </p>
-
-              }
-
-
+              )}
             </div>
 
-
+            {/* Icon */}
 
             <div
-
               className={cn(
-
-                "h-12 w-12",
-
-                "rounded-2xl",
-
-                "grid place-items-center",
-
-                "bg-gradient-to-br",
-
-                toneMap[tone]
-
+                `
+                  flex
+                  h-12
+                  w-12
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-xl
+                `,
+                colors.icon
               )}
-
             >
-
-
-              <Icon
-
-                className="
-h-6
-w-6
-"
-
-              />
-
-
+              <Icon className="h-6 w-6" />
             </div>
-
-
-
           </div>
-
-
         </CardContent>
-
-
       </Card>
-
-
     </motion.div>
-
-  )
-
+  );
 }
